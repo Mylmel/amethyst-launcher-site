@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Аметист Лаунчер — Скачать программы</title>
+<style>
+  :root {
+    --bg: #000000;
+    --bg-sec: #0a0a0a;
+    --card: #101010;
+    --card-hover: #161616;
+    --fg: #ffffff;
+    --fg-dim: #8a8a8a;
+    --fg-mute: #555555;
+    --border: #262626;
+    --border-strong: #404040;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--fg); text-decoration: none; transition: color .2s; }
+  a:hover { color: var(--fg-dim); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 100px 20px 80px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at 50% 40%, #000 35%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 35%, transparent 85%);
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    top: -40%; left: 50%;
+    width: 700px; height: 700px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 65%);
+    pointer-events: none;
+    filter: blur(20px);
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 100px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin-bottom: 26px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 6.5vw, 72px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.02;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  .hero h1 .outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #fff;
+    text-stroke: 1.5px #fff;
+  }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--fg-dim);
+    max-width: 620px;
+    margin: 0 auto 40px;
+  }
+
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+  }
+  .btn-primary:hover {
+    background: transparent;
+    color: #fff;
+    border-color: #fff;
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: #fff;
+    border-color: var(--border-strong);
+  }
+  .btn-outline:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    transform: translateY(-2px);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+
+  .section-head { text-align: center; margin-bottom: 52px; }
+  .section-head .eyebrow {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .section-head h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+    color: #fff;
+  }
+  .section-head p { color: var(--fg-dim); font-size: 15.5px; max-width: 600px; margin: 0 auto; }
+
+  /* ---------- TOOL CARDS ---------- */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: border-color .25s, transform .25s, background .25s, box-shadow .25s;
+  }
+  .tool-card:hover {
+    background: var(--card-hover);
+    transform: translateY(-4px);
+  }
+
+  /* Цвета при наведении для каждой карточки */
+  .card-amethyst:hover {
+    border-color: #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+  }
+  .card-packer:hover {
+    border-color: #f97316;
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.15);
+  }
+  .card-texture:hover {
+    border-color: #c19a6b;
+    box-shadow: 0 0 20px rgba(193, 154, 107, 0.15);
+  }
+
+  /* Обновленный стиль иконки для PNG */
+  .tool-icon {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+    margin-bottom: 22px;
+    border-radius: 10px;
+  }
+
+  .tool-card h3 { font-size: 21px; font-weight: 800; margin-bottom: 6px; letter-spacing: -.3px; }
+  .tool-card .file-name {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--fg-mute);
+    margin-bottom: 18px;
+    letter-spacing: .5px;
+  }
+
+  .tool-card p { color: var(--fg-dim); font-size: 14px; margin-bottom: 20px; }
+
+  .tool-features { list-style: none; margin-bottom: 26px; flex-grow: 1; }
+  .tool-features li {
+    font-size: 13.5px;
+    color: #b8b8b8;
+    padding-left: 22px;
+    position: relative;
+    margin-bottom: 7px;
+  }
+  .tool-features li::before {
+    content: "—";
+    position: absolute;
+    left: 2px;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .tool-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tool-actions .btn { padding: 12px 18px; font-size: 13px; flex: 1; justify-content: center; min-width: 120px; }
+
+  /* ---------- GAMES ---------- */
+  .games-section {
+    background: var(--bg-sec);
+    max-width: none;
+    margin: 0;
+    padding: 80px 20px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .games-inner { max-width: 1200px; margin: 0 auto; }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .game-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: border-color .2s, transform .2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .game-card:hover { border-color: #fff; transform: translateY(-3px); }
+
+  .game-card .game-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #fff;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .game-card .game-title .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .game-card .game-sub { font-size: 13px; color: var(--fg-dim); }
+  .game-card .game-tag {
+    align-self: flex-start;
+    font-size: 10.5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid var(--border-strong);
+    margin-top: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .game-card .game-tag.filled {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+  }
+  .game-card a.github-link {
+    margin-top: 16px;
+    font-size: 12.5px;
+    color: var(--fg-dim);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Consolas', monospace;
+    transition: color .2s;
+  }
+  .game-card a.github-link:hover { color: #fff; }
+
+  /* ---------- CMD BOX ---------- */
+  .cmd-box {
+    background: #000;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13.5px;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 26px;
+  }
+  .cmd-box code { white-space: pre-wrap; word-break: break-all; }
+  .copy-btn {
+    background: transparent;
+    color: #fff;
+    border: 1px solid var(--border-strong);
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .copy-btn:hover { background: #fff; color: #000; border-color: #fff; }
+  .copy-btn.copied { background: #fff; color: #000; border-color: #fff; }
+
+  /* ---------- REQUIREMENTS ---------- */
+  .req-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .req-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 22px;
+    text-align: center;
+    transition: border-color .2s;
+  }
+  .req-card:hover { border-color: #fff; }
+  .req-card .req-icon {
+    width: 46px; height: 46px;
+    display: grid; place-items: center;
+    margin: 0 auto 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    font-size: 22px;
+  }
+  .req-card h4 { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+  .req-card p { font-size: 13px; color: var(--fg-dim); margin-bottom: 14px; }
+  .req-card a {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    border-bottom: 1px solid var(--border-strong);
+    padding-bottom: 2px;
+    transition: border-color .2s;
+  }
+  .req-card a:hover { border-color: #fff; }
+
+  /* ---------- HINT ---------- */
+  .hint {
+    background: var(--bg-sec);
+    border: 1px solid var(--border);
+    border-left: 3px solid #fff;
+    color: #c0c0c0;
+    padding: 16px 20px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    margin-top: 26px;
+    text-align: left;
+  }
+  .hint code {
+    background: #000;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    color: #fff;
+    border: 1px solid var(--border);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    text-align: center;
+    padding: 44px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--fg-mute);
+    font-size: 13px;
+  }
+  footer a { color: var(--fg-dim); font-weight: 600; }
+  footer a:hover { color: #fff; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 600px) {
+    .hero { padding: 70px 18px 60px; }
+    section { padding: 60px 18px; }
+    .games-section { padding: 60px 18px; }
+    .cmd-box { flex-direction: column; align-items: stretch; }
+    .copy-btn { align-self: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="badge">Amethyst · Build v1</div>
+    <h1>Аметист<br><span class="outline">Лаунчер</span></h1>
+    <p>
+      Скачивай игры, устанавливай моды MBCmod и создавай собственные ресурс-паки.
+    </p>
+    <div class="hero-buttons">
+      <a href="#tools" class="btn btn-primary">⬇ Скачать программы</a>
+      <a href="#games" class="btn btn-outline">🎮 Официальные игры</a>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== TOOLS ==================== -->
+<section id="tools">
+  <div class="section-head">
+    <div class="eyebrow">Инструменты</div>
+    <h2>Три программы</h2>
+  </div>
+
+  <div class="tools-grid">
+
+    <!-- Launcher -->
+    <div class="tool-card card-amethyst">
+      <img class="tool-icon" src="ametist.png" alt="Аметист Лаунчер">
+      <h3>Аметист Лаунчер</h3>
+      <div class="file-name">AmethystLauncher.exe</div>
+      <p>Центр управления играми: скачивание, обновление, установка зависимостей и запуск в один клик.</p>
+      <ul class="tool-features">
+        <li>Minecraft Big Clone (1, 2, 3) и QubeForge</li>
+        <li>Импорт модов MBCmod (.mbcmod)</li>
+        <li>Ресурс-паки с резервными копиями</li>
+        <li>Автопоиск ссылки + открытие в браузере</li>
+        <li>Кнопка «Стоп» для остановки сервера</li>
+      </ul>
+      <div class="tool-actions">
+        <a class="btn btn-primary" href="downloads/AmethystLauncher.exe" download>⬇ Скачать .exe</a>
+        <a class="btn btn-outline" href="#req">Требования</a>
+      </div>
+    </div>
+
+    <!-- Packer -->
+    <div class="tool-card card-packer">
+      <img class="tool-icon" src="creatorzip.png" alt="MBCmod Packer">
+      <h3>MBCmod Packer</h3>
+      <div class="file-name">MBCmodPacker.exe</div>
+      <p>Упаковщик модов в формат <code>.mbcmod</code> — ZIP-архив с манифестом <code>mbcmod.json</code>.</p>
+      <ul class="tool-features">
+        <li>Автоматический манифест мода</li>
+        <li>Указание базовой игры и версии</li>
+        <li>Исключение node_modules, .git, dist</li>
+        <li>Описание и автор мода</li>
+        <li>Совместим с импортом в лаунчере</li>
+      </ul>
+      <div class="tool-actions">
+        <a class="btn btn-primary" href="downloads/MBCmodPacker.exe" download>⬇ Скачать .exe</a>
+        <a class="btn btn-outline" href="#req">Требования</a>
+      </div>
+    </div>
+
+    <!-- Texture Pack Editor -->
+    <div class="tool-card card-texture">
+      <img class="tool-icon" src="texture.png" alt="Редактор ресурс-паков">
+      <h3>Редактор ресурс-паков</h3>
+      <div class="file-name">TexturePackMaker.exe</div>
+      <p>Визуальный редактор цветов блоков и пиксель-арт паттернов 16×16 для v3 и QubeForge.</p>
+      <ul class="tool-features">
+        <li>Цвета блоков и инструментов</li>
+        <li>Пиксель-арт: кисть, заливка, пипетка</li>
+        <li>Поворот, отражение, копирование</li>
+        <li>Undo / Redo и зум</li>
+        <li>Экспорт готового пака в .ZIP</li>
+      </ul>
+      <div class="tool-actions">
+        <a class="btn btn-primary" href="downloads/TexturePackMaker.exe" download>⬇ Скачать .exe</a>
+        <a class="btn btn-outline" href="#req">Требования</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hint">
+    💡 <b>Куда положить файлы:</b> создай рядом с <code>index.html</code> папку
+    <code>downloads/</code> и положи в неё <code>AmethystLauncher.exe</code>,
+    <code>MBCmodPacker.exe</code> и <code>TexturePackMaker.exe</code>. Кнопки «Скачать» уже настроены на эти пути.
+  </div>
+</section>
+
+<!-- ==================== GAMES / GITHUB ==================== -->
+<section id="games" class="games-section">
+  <div class="games-inner">
+    <div class="section-head">
+      <div class="eyebrow">GitHub</div>
+      <h2>Официальные репозитории</h2>
+      <p>Исходный код игр от разработчика <b>neurochelplus</b></p>
+    </div>
+
+    <div class="games-grid">
+
+      <div class="game-card">
+        <div class="game-title"><span class="dot"></span>Minecraft Big Clone</div>
+        <div class="game-sub">Первая версия · без поддержки паков</div>
+        <span class="game-tag">Стабильная</span>
+        <a class="github-link" href="https://github.com/neurochelplus/Minecraft-Big-Clone" target="_blank" rel="noopener">
+          ↗ github.com/neurochelplus/Minecraft-Big-Clone
+        </a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-title"><span class="dot"></span>Minecraft Big Clone v2</div>
+        <div class="game-sub">Вторая версия · без поддержки паков</div>
+        <span class="game-tag">Стабильная</span>
+        <a class="github-link" href="https://github.com/neurochelplus/Minecraft-Big-Clone-v2" target="_blank" rel="noopener">
+          ↗ github.com/neurochelplus/Minecraft-Big-Clone-v2
+        </a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-title"><span class="dot"></span>Minecraft Big Clone v3</div>
+        <div class="game-sub">Третья версия · поддержка паков</div>
+        <span class="game-tag filled">Актуальная</span>
+        <a class="github-link" href="https://github.com/neurochelplus/Minecraft-Big-Clone-v3" target="_blank" rel="noopener">
+          ↗ github.com/neurochelplus/Minecraft-Big-Clone-v3
+        </a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-title"><span class="dot"></span>QubeForge</div>
+        <div class="game-sub">Новейший проект · полная поддержка паков</div>
+        <span class="game-tag filled">Новейшая</span>
+        <a class="github-link" href="https://github.com/neurochelplus/QubeForge" target="_blank" rel="noopener">
+          ↗ github.com/neurochelplus/QubeForge
+        </a>
+      </div>
+
+    </div>
+
+    <div class="cmd-box">
+      <code id="clone-cmd">git clone https://github.com/neurochelplus/QubeForge.git</code>
+      <button class="copy-btn" onclick="copyCmd(this)">Копировать</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== REQUIREMENTS ==================== -->
+<section id="req">
+  <div class="section-head">
+    <div class="eyebrow">Требования</div>
+    <h2>Что понадобится</h2>
+    <p>Для игр нужен Node.js</p>
+  </div>
+
+  <div class="req-grid">
+    <div class="req-card">
+      <div class="req-icon">◉</div>
+      <h4>Node.js 18+</h4>
+      <p>Среда выполнения для игр</p>
+      <a href="https://nodejs.org/" target="_blank" rel="noopener">Скачать</a>
+    </div>
+    <div class="req-card">
+      <div class="req-icon">◈</div>
+      <h4>Git</h4>
+      <p>Для клонирования и автообновления</p>
+      <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">Скачать</a>
+    </div>
+    <div class="req-card">
+      <div class="req-icon">▣</div>
+      <h4>Windows 10/11</h4>
+      <p>64-битная система</p>
+      <a href="https://www.microsoft.com/software-download/" target="_blank" rel="noopener">Подробнее</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <p>© <span id="year"></span> Аметист Лаунчер · Разработчик игр —
+    <a href="https://github.com/neurochelplus" target="_blank" rel="noopener">neurochelplus</a>
+  </p>
+  <p style="margin-top: 10px; font-size: 12px; color: #444;">
+    Все игры распространяются с официальных репозиториев GitHub.
+  </p>
+  <p style="margin-top: 10px;">© Mylmel. Все права защищены.</p>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  function copyCmd(btn) {
+    const code = document.getElementById('clone-cmd').textContent;
+    const fallback = () => {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    };
+    (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject())
+      .catch(fallback)
+      .finally(() => {
+        const prev = btn.textContent;
+        btn.textContent = '✓ Готово';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = prev;
+          btn.classList.remove('copied');
+        }, 1600);
+      });
+  }
+</script>
+</body>
+</html>
