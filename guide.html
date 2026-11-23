@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Как Творить — Аметист Лаунчер</title>
+<style>
+  :root {
+    --bg: #000000;
+    --bg-sec: #0a0a0a;
+    --card: #101010;
+    --card-hover: #161616;
+    --fg: #ffffff;
+    --fg-dim: #8a8a8a;
+    --fg-mute: #555555;
+    --border: #262626;
+    --border-strong: #404040;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--fg); text-decoration: none; transition: color .2s; }
+
+  code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: #000;
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 12.5px;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  /* ---------- TOPBAR ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, .82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    font-weight: 900;
+    letter-spacing: -.5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand:hover { color: var(--fg-dim); }
+  .topnav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .topnav a {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-dim);
+    padding: 8px 12px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    transition: all .2s;
+  }
+  .topnav a:hover { color: #fff; border-color: var(--border); background: rgba(255,255,255,.03); }
+  .topnav a.btn-mini {
+    color: #000;
+    background: #fff;
+    border-color: #fff;
+    font-weight: 700;
+  }
+  .topnav a.btn-mini:hover { background: transparent; color: #fff; border-color: var(--border-strong); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 80px 20px 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at 50% 40%, #000 35%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 35%, transparent 85%);
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    top: -45%; left: 50%;
+    width: 700px; height: 700px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 65%);
+    pointer-events: none;
+    filter: blur(20px);
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 100px;
+    font-size: 11.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin-bottom: 24px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .hero h1 {
+    font-size: clamp(34px, 6vw, 64px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.03;
+    margin-bottom: 18px;
+  }
+  .hero h1 .outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #fff;
+  }
+  .hero p {
+    font-size: 16.5px;
+    color: var(--fg-dim);
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 64px 20px; }
+  section > .wrap { padding: 0; }
+
+  .section-head { margin-bottom: 34px; }
+  .section-head .eyebrow {
+    font-size: 11.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .section-head h2 {
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .section-head h2 .num { color: var(--fg-mute); font-weight: 900; margin-right: 10px; }
+
+  .lead { color: var(--fg-dim); font-size: 15px; margin-bottom: 8px; }
+
+  /* ---------- CARDS ---------- */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+    transition: border-color .25s, background .25s, transform .25s;
+  }
+  .card:hover { background: var(--card-hover); border-color: var(--border-strong); transform: translateY(-2px); }
+  .card h3 { font-size: 17px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.2px; }
+  .card p { color: var(--fg-dim); font-size: 14px; }
+  .card .card-icon { font-size: 26px; display: block; margin-bottom: 14px; }
+
+  /* ---------- WARNING ---------- */
+  .warning {
+    background: var(--bg-sec);
+    border: 1px solid var(--border);
+    border-left: 3px solid #fff;
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-size: 14px;
+    color: #c8c8c8;
+    margin-top: 22px;
+  }
+  .warning b { color: #fff; }
+
+  .hint {
+    background: var(--bg-sec);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 13.5px;
+    color: #b0b0b0;
+    margin-top: 20px;
+  }
+
+  /* ---------- STEPS ---------- */
+  .steps { display: flex; flex-direction: column; gap: 18px; }
+
+  .step {
+    display: flex;
+    gap: 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 26px;
+    transition: border-color .25s, background .25s;
+  }
+  .step:hover { background: var(--card-hover); border-color: var(--border-strong); }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 34px; height: 34px;
+    display: grid; place-items: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    background: #000;
+  }
+  .step-body { flex: 1; min-width: 0; }
+  .step-body h4 { font-size: 16px; font-weight: 800; margin-bottom: 10px; letter-spacing: -.2px; }
+  .step-body p { color: var(--fg-dim); font-size: 14px; margin-bottom: 8px; }
+  .step-body p:last-child { margin-bottom: 0; }
+
+  .step-body ol, .step-body ul { margin: 8px 0 0 0; padding-left: 20px; }
+  .step-body li { color: #b8b8b8; font-size: 13.8px; margin-bottom: 6px; }
+  .step-body li::marker { color: var(--fg-mute); }
+  .step-body li:last-child { margin-bottom: 0; }
+  .step-body strong { color: #fff; font-weight: 700; }
+
+  /* ---------- FIELDS LIST ---------- */
+  .fields {
+    list-style: none;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .fields li {
+    background: #0c0c0c;
+    padding: 11px 16px;
+    font-size: 13.5px;
+    color: #b8b8b8;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    margin: 0;
+  }
+  .fields li + li { border-top: 1px solid var(--border); }
+  .fields li .fname { color: #fff; font-weight: 700; flex-shrink: 0; min-width: 145px; }
+
+  /* ---------- TABLE ---------- */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); margin-top: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    font-weight: 700;
+    background: #0c0c0c;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td { padding: 12px 16px; color: #b8b8b8; border-bottom: 1px solid var(--border); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: rgba(255,255,255,.025); color: #e0e0e0; }
+  td:first-child { color: #fff; font-weight: 600; white-space: nowrap; }
+
+  .kbd {
+    display: inline-block;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    padding: 2px 8px;
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    background: #0a0a0a;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq { display: flex; flex-direction: column; gap: 12px; }
+  details {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color .25s, background .25s;
+  }
+  details:hover { border-color: var(--border-strong); background: var(--card-hover); }
+  details[open] { border-color: var(--border-strong); }
+  summary {
+    cursor: pointer;
+    padding: 18px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: "+";
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--fg-mute);
+    transition: transform .25s, color .25s;
+    line-height: 1;
+  }
+  details[open] summary::after { content: "−"; color: #fff; }
+  details .faq-body { padding: 0 22px 20px; }
+  details .faq-body ul { padding-left: 20px; margin: 0; }
+  details .faq-body li { color: var(--fg-dim); font-size: 14px; margin-bottom: 7px; }
+  details .faq-body li::marker { color: var(--fg-mute); }
+  details .faq-body p { color: var(--fg-dim); font-size: 14px; }
+  details .faq-body li:last-child { margin-bottom: 0; }
+
+  /* ---------- CHECKLIST ---------- */
+  .check-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+  }
+  .check-card h3 {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 9px 0;
+    font-size: 14px;
+    color: #b8b8b8;
+    cursor: pointer;
+    user-select: none;
+    transition: color .2s;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item:hover { color: #fff; }
+  .check-item input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    border: 1px solid var(--border-strong);
+    border-radius: 5px;
+    background: #000;
+    cursor: pointer;
+    position: relative;
+    transition: all .2s;
+  }
+  .check-item input:hover { border-color: #fff; }
+  .check-item input:checked { background: #fff; border-color: #fff; }
+  .check-item input:checked::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #000;
+    font-size: 12px;
+    font-weight: 900;
+  }
+  .check-item input:checked + span { color: var(--fg-mute); text-decoration: line-through; }
+
+  .progress-wrap { margin-top: 20px; }
+  .progress-bar {
+    height: 6px;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    border-radius: 100px;
+    transition: width .35s ease;
+  }
+  .progress-label {
+    font-size: 11.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
+  /* ---------- CTA ---------- */
+  .cta {
+    text-align: center;
+    padding: 70px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-sec);
+  }
+  .cta h2 { font-size: clamp(24px, 3.5vw, 34px); font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; }
+  .cta p { color: var(--fg-dim); font-size: 15px; margin-bottom: 28px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .2s;
+    border: 1px solid transparent;
+  }
+  .btn-primary { background: #fff; color: #000; border-color: #fff; }
+  .btn-primary:hover { background: transparent; color: #fff; border-color: #fff; transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: #fff; border-color: var(--border-strong); }
+  .btn-outline:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-2px); }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--fg-mute);
+    font-size: 13px;
+  }
+  footer a { color: var(--fg-dim); font-weight: 600; }
+  footer a:hover { color: #fff; }
+
+  /* ---------- APP MOCKUP (скриншот MBCmod Packer) ---------- */
+  .shot-wrap { margin: 20px 0 4px; }
+
+  .app-shot {
+    background: #1a1a1a;
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .app-shot-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: #242424;
+    border-bottom: 1px solid #333;
+  }
+  .app-shot-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .app-shot-bar .dot:nth-child(1) { background: #ff5f57; }
+  .app-shot-bar .dot:nth-child(2) { background: #febc2e; }
+  .app-shot-bar .dot:nth-child(3) { background: #28c840; }
+  .app-shot-title {
+    margin-left: 10px;
+    font-size: 11.5px;
+    color: #9a9a9a;
+    letter-spacing: .3px;
+  }
+
+  .app-shot-body { padding: 20px 24px 24px; }
+
+  .app-title { font-size: 19px; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+  .app-title .app-ver { font-size: 10px; color: #8a8a8a; font-weight: 400; margin-left: 4px; }
+  .app-sub { font-size: 11.5px; color: #8a8a8a; line-height: 1.5; margin-top: 6px; }
+  .app-divider { height: 1px; background: #333; margin: 14px 0 16px; }
+
+  .app-label { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+
+  .app-input {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
+    margin-bottom: 14px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+  }
+  .app-input.dropdown { padding-right: 30px; }
+  .app-input.dropdown::after {
+    content: "▾";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9a9a9a;
+    font-size: 11px;
+  }
+
+  .app-row { display: flex; gap: 6px; margin-bottom: 14px; }
+  .app-row .app-input { flex: 1; margin-bottom: 0; }
+
+  .app-btn {
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .app-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .app-textarea {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    color: #e0e0e0;
+    min-height: 68px;
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+  .app-note { font-size: 10.5px; color: #7a7a7a; margin-bottom: 16px; }
+
+  .app-cta {
+    background: #fff;
+    color: #000;
+    padding: 13px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: .3px;
+  }
+
+  .shot-caption {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--fg-mute);
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    .app-cols { grid-template-columns: 1fr; gap: 0; }
+    .app-shot-body { padding: 16px 16px 20px; }
+  }
+
+  /* anchor offset under sticky bar */
+  section[id] { scroll-margin-top: 74px; }
+
+  @media (max-width: 700px) {
+    .topnav a:not(.btn-mini) { display: none; }
+    .step { padding: 20px 18px; gap: 14px; }
+    .fields li { flex-direction: column; gap: 2px; }
+    .fields li .fname { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== TOPBAR ==================== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">◈ Аметист</a>
+    <nav class="topnav">
+      <a href="#princip">Принцип</a>
+      <a href="#part1">Моды</a>
+      <a href="#part2">Текстур-паки</a>
+      <a href="#part3">Установка</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn-mini" href="index.html">← На главную</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="badge">Документация · Гайд</div>
+    <h1>Как <span class="outline">Творить</span></h1>
+    <p>Полная инструкция по созданию модов <b>MBCmod</b> и текстур-паков для Аметист Лаунчера.</p>
+  </div>
+</div>
+
+<!-- ==================== ПРИНЦИП ==================== -->
+<section id="princip">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Общее</div>
+      <h2>Принцип работы</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="card-icon">🧩</span>
+        <h3>Мод (MBCmod)</h3>
+        <p>Обычный ZIP-архив, внутри которого лежат <b>изменённые файлы игры</b> и манифест <code>mbcmod.json</code>. Лаунчер распаковывает архив в отдельную папку и показывает её в списке как самостоятельную версию игры.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🎨</span>
+        <h3>Текстур-пак</h3>
+        <p>ZIP-архив с файлами <code>.ts</code> (цвета и пиксель-арт паттерны 16×16) и файлом <code>pack.json</code>. Лаунчер заменяет ими оригинальные файлы, предварительно создав резервную копию.</p>
+      </div>
+    </div>
+
+    <div class="warning">
+      ⚠️ <b>Важно:</b> для всех действий ниже используйте готовые скомпилированные программы —
+      <code>MBCmodPacker.exe</code>, <code>TexturePackMaker.exe</code> и <code>AmethystLauncher.exe</code>.
+      Запускать Python-скрипты не нужно.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ЧАСТЬ 1 ==================== -->
+<section id="part1">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Часть 1</div>
+      <h2><span class="num">01</span>Создание модов</h2>
+      <p class="lead">Формат <code>.mbcmod</code></p>
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Подготовка файлов игры</h4>
+          <ol>
+            <li>Найдите папку с рабочей версией игры (например, <code>Minecraft-Big-Clone-v3</code>).</li>
+            <li>Внесите нужные изменения в код: отредактируйте файлы в папке <code>src/</code>, измените баланс, добавьте новые механики или файлы.</li>
+            <li><strong>Не удаляйте <code>node_modules</code> вручную</strong> — упаковщик сделает это автоматически, чтобы архив не весил сотни мегабайт.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Упаковка мода</h4>
+          <p>Запустите <code>MBCmodPacker.exe</code>. Окно программы выглядит так — заполните все поля:</p>
+
+          <div class="shot-wrap">
+            <div class="app-shot" role="img" aria-label="Интерфейс MBCmod Packer">
+              <div class="app-shot-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="app-shot-title">MBCmod Packer — упаковщик модов</span>
+              </div>
+              <div class="app-shot-body">
+                <div class="app-title">MBCmod PACKER <span class="app-ver">v1</span></div>
+                <div class="app-sub">Упаковывает папку игры в ZIP-архив формата MBCmod.<br>Внутри создаётся mbcmod.json с метаданными мода.</div>
+                <div class="app-divider"></div>
+
+                <div class="app-label">Папка с игрой / модифицированными файлами</div>
+                <div class="app-row">
+                  <div class="app-input">C:\Games\Minecraft-Big-Clone-v3</div>
+                  <div class="app-btn">📁 Выбрать</div>
+                </div>
+
+                <div class="app-label">Название мода</div>
+                <div class="app-input">Hardcore Edition</div>
+
+                <div class="app-cols">
+                  <div>
+                    <div class="app-label">Версия мода</div>
+                    <div class="app-input">1.0.0</div>
+                  </div>
+                  <div>
+                    <div class="app-label">Базовая игра</div>
+                    <div class="app-input dropdown">Minecraft Big Clone v3</div>
+                  </div>
+                </div>
+
+                <div class="app-label">Версия игры, на которой сделан мод</div>
+                <div class="app-row">
+                  <div class="app-input">0.3.2</div>
+                  <div class="app-btn">↻ Из package.json</div>
+                </div>
+
+                <div class="app-label">Автор (необязательно)</div>
+                <div class="app-input">neurochelplus</div>
+
+                <div class="app-label">Описание (необязательно)</div>
+                <div class="app-textarea">Хардкорная версия: меньше HP, злые мобы и новые руды.</div>
+                <div class="app-note">Описание появится в лаунчере при выборе этой версии.</div>
+
+                <div class="app-cta">📦  СОБРАТЬ .MBCmod</div>
+              </div>
+            </div>
+            <p class="shot-caption">Интерфейс <code>MBCmodPacker.exe</code>. Значения на скрине — пример, подставьте свои.</p>
+          </div>
+
+          <p style="margin-top: 18px;">Нажмите большую кнопку <b>📦 СОБРАТЬ .MBCmod</b> и выберите место сохранения. Получите файл вида <code>Hardcore_Edition_v1.0.0.mbcmod</code>.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="hint">
+      💡 Программа автоматически исключит из архива системный мусор: <code>node_modules</code>,
+      <code>.git</code>, <code>.vscode</code>, <code>.idea</code>, <code>__pycache__</code>,
+      <code>.DS_Store</code> и другие временные файлы.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ЧАСТЬ 2 ==================== -->
+<section id="part2">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Часть 2</div>
+      <h2><span class="num">02</span>Создание текстур-паков</h2>
+      <p class="lead">Формат <code>.zip</code> + <code>pack.json</code></p>
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Запуск редактора</h4>
+          <p>Откройте <code>TexturePackMaker.exe</code>.</p>
+          <p style="color: var(--fg-mute); font-size: 13px;">
+            Для экспорта превью в PNG рекомендуется, чтобы в системе была установлена библиотека Pillow
+            (если вы собирали exe самостоятельно с ней), но основной экспорт в ZIP работает всегда.
+          </p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Настройка метаданных</h4>
+          <p>В верхней части окна укажите:</p>
+          <ul>
+            <li><strong>Игра</strong> — <code>Minecraft Big Clone v3</code> или <code>QubeForge</code> (форматы файлов различаются, выбирайте верно!).</li>
+            <li><strong>Название пака</strong> — например, <code>Neon Pack</code>.</li>
+            <li><strong>Автор</strong> — ваш никнейм.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Редактирование цветов — вкладка «🎨 Цвета блоков и предметов»</h4>
+          <ul>
+            <li><strong>Для QubeForge:</strong> настраивайте цвета <code>top</code> (верх) и <code>side</code> (бок) для каждого блока (<code>GRASS</code>, <code>DIRT</code>, <code>STONE</code> и т.д.).</li>
+            <li><strong>Для v3:</strong> настраивайте HEX-цвета: <code>WOOD_PRIMARY</code>, <code>COAL_BLACK</code>, <code>IRON_BEIGE</code>, цвета рукояток и лезвий инструментов.</li>
+            <li><strong>Как менять:</strong> просто кликните по цветной кнопке — откроется стандартное окно выбора цвета Windows.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Рисование текстур — вкладка «🧱 Пиксель-арт паттерны 16×16»</h4>
+          <p>Здесь вы рисуете формы блоков и предметов по клеткам.</p>
+          <p><strong>Доступные паттерны:</strong> верстак (<code>CT_TOP</code>), руды (<code>ORE</code>), печка (<code>FURNACE</code>), мечи, кирки, топоры, лопаты, компас, уголь, слитки, мясо.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Действие</th><th>Клавиша / кнопка</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>✏ Кисть</td><td><span class="kbd">B</span> или кнопка «✏ Кисть»</td></tr>
+                <tr><td>🪣 Заливка</td><td><span class="kbd">F</span> или кнопка «🪣 Заливка»</td></tr>
+                <tr><td>💧 Пипетка</td><td><span class="kbd">I</span>, <span class="kbd">Alt</span> + ЛКМ, или кнопка</td></tr>
+                <tr><td>🧽 Ластик (прозрачный цвет <code>0</code>)</td><td><span class="kbd">E</span> или ПКМ</td></tr>
+                <tr><td>Выбор цвета палитры</td><td>цифры <span class="kbd">0</span>–<span class="kbd">9</span></td></tr>
+                <tr><td>Новый слот цвета</td><td>кнопка <span class="kbd">+</span></td></tr>
+                <tr><td>Изменить цвет текущего слота</td><td>кнопка <span class="kbd">✎</span></td></tr>
+                <tr><td>Отмена / повтор</td><td><span class="kbd">Ctrl</span>+<span class="kbd">Z</span> / <span class="kbd">Ctrl</span>+<span class="kbd">Y</span></td></tr>
+                <tr><td>Копировать / вставить паттерн</td><td><span class="kbd">Ctrl</span>+<span class="kbd">C</span> / <span class="kbd">Ctrl</span>+<span class="kbd">V</span></td></tr>
+                <tr><td>Сетка</td><td><span class="kbd">G</span></td></tr>
+                <tr><td>Масштаб</td><td><span class="kbd">Ctrl</span> + колёсико мыши</td></tr>
+                <tr><td>Экспорт текущего паттерна в PNG</td><td><span class="kbd">Ctrl</span>+<span class="kbd">S</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p style="margin-top: 14px; font-size: 13.5px; color: var(--fg-mute);">
+            В палитре <code>0</code> = прозрачный цвет. Слоты <code>A</code>–<code>F</code>
+            выбираются кликом по кнопке палитры — горячие клавиши работают только для <code>0</code>–<code>9</code>.
+            Горячие клавиши не срабатывают, когда курсор находится в текстовом поле
+            (например, при вводе названия пака или автора).
+          </p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>Экспорт</h4>
+          <ol>
+            <li>Нажмите кнопку <b>💾 Экспортировать в .ZIP</b> в правом верхнем углу.</li>
+            <li>Выберите место сохранения. Вы получите файл <code>Neon Pack.zip</code>.</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ЧАСТЬ 3 ==================== -->
+<section id="part3">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Часть 3</div>
+      <h2><span class="num">03</span>Установка и запуск</h2>
+      <p class="lead">Через <code>AmethystLauncher.exe</code></p>
+    </div>
+
+    <div class="grid-2">
+
+      <div class="card">
+        <span class="card-icon">🧩</span>
+        <h3>Установка мода (MBCmod)</h3>
+        <ol style="margin-top: 14px; padding-left: 20px;">
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;">Запустите <code>AmethystLauncher.exe</code>.</li>
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;">Нажмите <b>🧩 Моды (MBCmod)</b> внизу справа.</li>
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;">Нажмите <b>📥 Импортировать MBCmod</b> и выберите ваш <code>.mbcmod</code> файл.</li>
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;">Готово! Мод появится в списке версий слева с иконкой 🧩 и пометкой «установлен».</li>
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;"><strong style="color:#fff;">Обязательно:</strong> выберите мод в списке и нажмите <b>📦 Зависимости</b> — лаунчер скачает свежий <code>node_modules</code> в папку мода (нужно для первого запуска).</li>
+          <li style="color:#b8b8b8; font-size: 14px;">Нажмите <b>▶ ИГРАТЬ</b>.</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">🎨</span>
+        <h3>Установка текстур-пака</h3>
+        <ol style="margin-top: 14px; padding-left: 20px;">
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;">Выберите нужную базовую версию игры или ваш установленный мод (если он поддерживает паки).</li>
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;">Нажмите <b>🎨 Ресурс-паки</b>.</li>
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;">Нажмите <b>📥 Импортировать .ZIP</b> и выберите файл текстур-пака.</li>
+          <li style="color:#b8b8b8; font-size: 14px; margin-bottom: 8px;">Лаунчер <strong style="color:#fff;">автоматически создаст резервную копию</strong> оригинальных файлов в скрытую папку <code>.resource_pack_backup</code> внутри игры, а затем заменит их на ваши.</li>
+          <li style="color:#b8b8b8; font-size: 14px;">Чтобы вернуть всё как было, нажмите <b>↩ Вернуть оригинал</b> в том же окне.</li>
+        </ol>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Помощь</div>
+      <h2>Советы и частые вопросы</h2>
+    </div>
+
+    <div class="faq">
+
+      <details>
+        <summary>❓ Мод не появляется в списке или лаунчер выдаёт ошибку</summary>
+        <div class="faq-body">
+          <ul>
+            <li>Убедитесь, что внутри архива <code>.mbcmod</code> в самом корне лежит файл <code>mbcmod.json</code>.</li>
+            <li>Проверьте, что поле <code>base_game</code> в манифесте точно совпадает с одной из поддерживаемых игр (например, <code>Minecraft Big Clone v3</code>).</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>❓ Текстуры не применились или игра выглядит сломанной</summary>
+        <div class="faq-body">
+          <ul>
+            <li>Убедитесь, что при создании пака в <code>TexturePackMaker.exe</code> была выбрана <strong>та же самая игра</strong>, которая сейчас выбрана в лаунчере (форматы v3 и QubeForge несовместимы между собой).</li>
+            <li>Если что-то пошло не так, нажмите «↩ Вернуть оригинал» в меню ресурс-паков.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>❓ Как поделиться своим модом с другом?</summary>
+        <div class="faq-body">
+          <p>Просто отправьте ему файл <code>.mbcmod</code> или <code>.zip</code> (для текстур) через любой мессенджер или облако. Ему нужно будет лишь импортировать его через соответствующую кнопку в <code>AmethystLauncher.exe</code>.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>❓ Можно ли обновить уже установленный мод?</summary>
+        <div class="faq-body">
+          <p>Да. Найдите папку мода (её путь указан в лаунчере под названием версии), внесите изменения в файлы, затем переупакуйте её через <code>MBCmodPacker.exe</code> под новым именем версии и импортируйте заново. Старую версию можно удалить через кнопку «🗑 Удалить выбранный» в окне модов.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ЧЕК-ЛИСТ ==================== -->
+<section id="checklist">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Перед релизом</div>
+      <h2>🎁 Быстрый чек-лист</h2>
+    </div>
+
+    <div class="grid-2">
+
+      <div class="check-card">
+        <h3>Для мода</h3>
+        <label class="check-item"><input type="checkbox" /><span>Файлы игры изменены и сохранены</span></label>
+        <label class="check-item"><input type="checkbox" /><span>Запущен <code>MBCmodPacker.exe</code>, все поля заполнены</span></label>
+        <label class="check-item"><input type="checkbox" /><span>Файл <code>.mbcmod</code> успешно создан</span></label>
+        <label class="check-item"><input type="checkbox" /><span>Файл импортирован в <code>AmethystLauncher.exe</code></span></label>
+        <label class="check-item"><input type="checkbox" /><span>Нажата кнопка «📦 Зависимости» для установки <code>node_modules</code></span></label>
+      </div>
+
+      <div class="check-card">
+        <h3>Для текстур-пака</h3>
+        <label class="check-item"><input type="checkbox" /><span>Запущен <code>TexturePackMaker.exe</code></span></label>
+        <label class="check-item"><input type="checkbox" /><span>Выбрана правильная целевая игра (v3 или QubeForge)</span></label>
+        <label class="check-item"><input type="checkbox" /><span>Цвета и паттерны настроены и сохранены</span></label>
+        <label class="check-item"><input type="checkbox" /><span>Экспортирован файл <code>.zip</code></span></label>
+        <label class="check-item"><input type="checkbox" /><span>Пак импортирован через «🎨 Ресурс-паки» в лаунчере</span></label>
+      </div>
+
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">Готовность: 0 / 10</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CTA ==================== -->
+<div class="cta">
+  <h2>Удачного модостроения! 🚀</h2>
+  <p>Если возникнут ошибки — лаунчер покажет подробное сообщение. Читайте его: там обычно указана точная причина (например, отсутствие <code>package.json</code> или неверный формат архива).</p>
+  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <a class="btn btn-primary" href="index.html#tools">⬇ Скачать программы</a>
+    <a class="btn btn-outline" href="index.html">← На главную</a>
+  </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <p>© <span id="year"></span> Аметист Лаунчер · Разработчик игр —
+    <a href="https://github.com/neurochelplus" target="_blank" rel="noopener">neurochelplus</a>
+  </p>
+  <p style="margin-top: 10px;">© Mylmel. Все права защищены.</p>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Чек-лист с прогрессом
+  const boxes = document.querySelectorAll('.check-item input');
+  const fill = document.getElementById('progressFill');
+  const label = document.getElementById('progressLabel');
+
+  function updateProgress() {
+    const done = document.querySelectorAll('.check-item input:checked').length;
+    const total = boxes.length;
+    fill.style.width = (done / total * 100) + '%';
+    label.textContent = 'Готовность: ' + done + ' / ' + total +
+      (done === total ? ' — можно релизить 🚀' : '');
+  }
+
+  boxes.forEach(b => b.addEventListener('change', updateProgress));
+  updateProgress();
+</script>
+</body>
+</html>
